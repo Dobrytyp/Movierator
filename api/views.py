@@ -2,6 +2,7 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework.response import Response
 from django.http.response import HttpResponseNotAllowed
+from rest_framework.decorators import action
 
 from api.serializers import UserSerializer, FilmMiniSerializer
 from .models import Film
@@ -57,3 +58,12 @@ class FilmViewSet(viewsets.ModelViewSet):
         film = self.get_object()
         film.delete()
         return Response('Film usunięty')
+
+    @action(detail=True)
+    def premiera(self, request, **kwargs):
+        film = self.get_object()
+        film.po_premierze = True
+        film.save()
+
+        serializer = FilmSerializer(film, many=False)
+        return Response(serializer.data)
