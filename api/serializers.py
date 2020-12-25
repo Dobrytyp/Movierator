@@ -19,4 +19,4 @@ class FilmSerializer(serializers.HyperlinkedModelSerializer):
 class FilmMiniSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Film
-        fields = ('tytul',)
+        fields = ('tytul', 'id')
