@@ -59,6 +59,13 @@ class FilmViewSet(viewsets.ModelViewSet):
         film.delete()
         return Response('Film usunięty')
 
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""'"""
+    """ Dekorator "action" pozwala wywołać meotdę funkcji wpisując jej    """
+    """ nazwę w link. N.p.:http://127.0.0.1:8000/api/filmy/2/premiera/    """
+    """ Spowoduję, że po uderzeniu na endpoint zmieni się wartość zmiennej"""
+    """ "po_premierze" na True.                                           """
+    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""'"""
+
     @action(detail=True)
     def premiera(self, request, **kwargs):
         film = self.get_object()
@@ -66,4 +73,20 @@ class FilmViewSet(viewsets.ModelViewSet):
         film.save()
 
         serializer = FilmSerializer(film, many=False)
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def premiera_wszystkie(self, request, **kwargs):
+        filmy = Film.objects.all()
+        filmy.update(po_premierze=True)
+
+        serializer = FilmSerializer(filmy, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def przed_premiera_wszystkie(self, request, **kwargs):
+        filmy = Film.objects.all()
+        filmy.update(po_premierze=False)
+
+        serializer = FilmSerializer(filmy, many=True)
         return Response(serializer.data)
